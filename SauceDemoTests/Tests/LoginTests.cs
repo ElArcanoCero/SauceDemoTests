@@ -8,15 +8,10 @@ using Xunit;
 
 namespace SauceDemoTests.Tests
 {
-
     public class LoginTests : IDisposable
     {
-        private IWebDriver driver;
-
-        public LoginTests()
-        {
-            driver = DriverManager.Instance.CreateDriver("edge");
-        }
+        private readonly DriverManager _driverManager = DriverManager.Instance;
+        private IWebDriver? _driver;
 
         [Theory]
         [InlineData("edge", "", "", "Epic sadface: Username is required")]
@@ -29,20 +24,25 @@ namespace SauceDemoTests.Tests
             string password,
             string expectedMessage)
         {
-            Logger.Log($"[START] InvalidLogin on {browserName} with user='{username}' pass='{password}'");
+            Logger.Log($"[TEST] Starting InvalidLogin_ShowsExpectedErrorMessage on {browserName} " +
+                       $"with user='{username}', pass='{password}'");
 
-            driver = DriverManager.Instance.CreateDriver(browserName);
+            _driver = _driverManager.CreateDriver(browserName);
 
-            var loginPage = new LoginPage(driver);
+            var loginPage = new LoginPage(_driver);
             loginPage.Open();
+            Logger.Log("[TEST] Login page opened.");
+
             loginPage.Login(username, password);
+            Logger.Log("[TEST] Login attempted.");
 
             var actualMessage = loginPage.GetErrorMessage();
+            Logger.Log($"[TEST] Error message from UI: '{actualMessage}'");
 
             actualMessage.Should().Be(expectedMessage,
-                because: "the application should show the proper validation message");
+                because: "the application should display the proper validation message");
 
-            Logger.Success($"[PASS] Got expected message '{actualMessage}' on {browserName}");
+            Logger.Success("[TEST] Assertion passed for InvalidLogin_ShowsExpectedErrorMessage.");
         }
 
         [Theory]
@@ -54,26 +54,32 @@ namespace SauceDemoTests.Tests
             string password,
             string expectedDashboardTitle)
         {
-            Logger.Log($"[START] ValidLogin on {browserName} with user='{username}'");
+            Logger.Log($"[TEST] Starting ValidLogin_ShowsSwagLabsTitle on {browserName} " +
+                       $"with user='{username}'");
 
-            driver = DriverManager.Instance.CreateDriver(browserName);
+            _driver = _driverManager.CreateDriver(browserName);
 
-            var loginPage = new LoginPage(driver);
+            var loginPage = new LoginPage(_driver);
             loginPage.Open();
-            loginPage.Login(username, password);
+            Logger.Log("[TEST] Login page opened.");
 
-            var inventoryPage = new InventoryPage(driver);
+            loginPage.Login(username, password);
+            Logger.Log("[TEST] Login submitted.");
+
+            var inventoryPage = new InventoryPage(_driver);
             var actualTitle = inventoryPage.GetLogoText();
+            Logger.Log($"[TEST] Inventory page title is '{actualTitle}'");
 
             actualTitle.Should().Be(expectedDashboardTitle,
-                because: "successful login should navigate to the Swag Labs inventory page");
+                because: "successful login should navigate to inventory page labeled 'Swag Labs'");
 
-            Logger.Success($"[PASS] Logged in on {browserName} and saw '{actualTitle}'");
+            Logger.Success("[TEST] Assertion passed for ValidLogin_ShowsSwagLabsTitle.");
         }
 
         public void Dispose()
         {
-            DriverManager.Instance.QuitDriver();
+            Logger.Log("[TEST] Disposing test context, closing driver.");
+            _driverManager.QuitDriver();
         }
     }
 }

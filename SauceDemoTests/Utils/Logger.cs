@@ -4,11 +4,11 @@ namespace SauceDemoTests.Utils
 {
     public static class Logger
     {
-        private static readonly object _lock = new object();
+        private static readonly object Lock = new object();
 
         public static void Log(string message)
         {
-            lock (_lock)
+            lock (Lock)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {message}");
@@ -18,7 +18,7 @@ namespace SauceDemoTests.Utils
 
         public static void Error(string errorMessage)
         {
-            lock (_lock)
+            lock (Lock)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ERROR: {errorMessage}");
@@ -28,7 +28,7 @@ namespace SauceDemoTests.Utils
 
         public static void Success(string successMessage)
         {
-            lock (_lock)
+            lock (Lock)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {successMessage}");
