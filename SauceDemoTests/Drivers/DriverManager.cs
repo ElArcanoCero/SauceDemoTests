@@ -52,7 +52,7 @@ namespace SauceDemoTests.Drivers
             }
             else
             {
-                Console.WriteLine("else");//no funciona
+                Logger.Success("salida driver manager");
             }
         }
     }

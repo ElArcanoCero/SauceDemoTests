@@ -14,7 +14,7 @@ namespace SauceDemoTests.Tests
         private IWebDriver? driver;
 
         [Theory]
-
+        // esto puede volverse un ciclo para mejorar?
         [InlineData("edge", "nombre", "clave", "Epic sadface: Username is required")]
         [InlineData("firefox", "nombre", "clave", "Epic sadface: Username is required")]
 
@@ -33,8 +33,7 @@ namespace SauceDemoTests.Tests
 
             if (expected.Contains("Username is required", StringComparison.OrdinalIgnoreCase))
             {
-                Logger.Log("caso 1"); // no funciona 
-                Console.WriteLine("caso 1");// tampoco funciona
+                Logger.Log("caso 1");
 
                 loginPage.LoginEmptyCredentials_UC1(username, password);
 
@@ -43,8 +42,7 @@ namespace SauceDemoTests.Tests
             }
             else if (expected.Contains("Password is required", StringComparison.OrdinalIgnoreCase))
             {
-                Logger.Log("caso 2"); // no funciona 
-                Console.WriteLine("caso 2");//no 
+                Logger.Log("caso 2");
 
                 loginPage.LoginMissingPassword_UC2(username, password);
 
@@ -53,6 +51,9 @@ namespace SauceDemoTests.Tests
             }
             else
             {
+
+                Logger.Log("caso 3");
+
                 loginPage.Login(username, password);
 
                 var inventoryPage = new InventoryPage(driver);
