@@ -6,24 +6,15 @@ using SauceDemoTests.Utils;
 
 namespace SauceDemoTests.Drivers
 {
-    /// <summary>
-    /// DriverManager implementa el patrón Singleton y Factory.
-    /// Se encarga de crear, configurar y limpiar las instancias de WebDriver
-    /// para los navegadores Edge y Firefox.
-    /// </summary>
+
     public sealed class DriverManager
     {
-        private static DriverManager _instance;
+        private static DriverManager? _instance;
         private IWebDriver _currentDriver;
 
-        /// <summary>
-        /// Constructor privado: asegura la implementación Singleton.
-        /// </summary>
+
         private DriverManager() { }
 
-        /// <summary>
-        /// Instancia única del DriverManager.
-        /// </summary>
         public static DriverManager Instance
         {
             get
@@ -34,15 +25,8 @@ namespace SauceDemoTests.Drivers
             }
         }
 
-        /// <summary>
-        /// Crea y configura un nuevo WebDriver para el navegador especificado.
-        /// Implementa el patrón Factory para soportar múltiples navegadores.
-        /// </summary>
-        /// <param name="browserName">Nombre del navegador: "edge" o "firefox".</param>
-        /// <returns>Instancia configurada de IWebDriver.</returns>
         public IWebDriver CreateDriver(string browserName)
         {
-            // Si ya existe un driver activo, se reutiliza
             if (_currentDriver != null)
                 return _currentDriver;
 
@@ -64,7 +48,6 @@ namespace SauceDemoTests.Drivers
                         throw new ArgumentException($"Unsupported browser: {browserName}");
                 }
 
-                // Configuración general
                 _currentDriver.Manage().Window.Maximize();
                 _currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                 Logger.Log($"✅ {browserName} driver initialized successfully.");
@@ -78,9 +61,6 @@ namespace SauceDemoTests.Drivers
             return _currentDriver;
         }
 
-        /// <summary>
-        /// Cierra el navegador, limpia cookies y libera el recurso WebDriver.
-        /// </summary>
         public void QuitDriver()
         {
             if (_currentDriver != null)
