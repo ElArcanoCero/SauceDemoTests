@@ -4,41 +4,41 @@ namespace SauceDemoTests.Pages
 {
     public class LoginPage
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver driver;
 
-        private readonly By _userField = By.Id("user-name");
+        private readonly By userField = By.Id("user-name");
 
-        private readonly By _passField = By.Id("password");
+        private readonly By passField = By.Id("password");
 
-        private readonly By _loginBtn = By.Id("login-button");
+        private readonly By loginBtn = By.Id("login-button");
 
-        private readonly By _errorBox = By.CssSelector("[data-test='error']");
+        private readonly By errorBox = By.CssSelector("[data-test='error']");
 
-        public LoginPage(IWebDriver driver)
+        public LoginPage(IWebDriver Driver)
         {
-            _driver = driver;
+            driver = Driver;
         }
 
         public void Open()
         {
-            _driver.Navigate().GoToUrl("https://www.saucedemo.com/");
+            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
 
         public void Login(string username, string password)
         {
-            _driver.FindElement(_userField).Clear();
-            _driver.FindElement(_passField).Clear();
+            driver.FindElement(userField).Clear();
+            driver.FindElement(passField).Clear();
 
-            _driver.FindElement(_userField).SendKeys(username);
-            _driver.FindElement(_passField).SendKeys(password);
+            driver.FindElement(userField).SendKeys(username);
+            driver.FindElement(passField).SendKeys(password);
 
-            _driver.FindElement(_loginBtn).Click();
+            driver.FindElement(loginBtn).Click();
         }
 
 
         public string GetErrorMessage()
         {
-            return _driver.FindElement(_errorBox).Text.Trim();
+            return driver.FindElement(errorBox).Text.Trim();
         }
     }
 }

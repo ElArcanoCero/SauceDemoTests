@@ -9,8 +9,8 @@ namespace SauceDemoTests.Drivers
 
     public sealed class DriverManager
     {
-        private static DriverManager? _instance;
-        private IWebDriver? _currentDriver;
+        private static DriverManager? instance;
+        private IWebDriver? currentDriver;
 
 
         private DriverManager() { }
@@ -19,16 +19,16 @@ namespace SauceDemoTests.Drivers
         {
             get
             {
-                if (_instance == null)
-                    _instance = new DriverManager();
-                return _instance;
+                if (instance == null)
+                    instance = new DriverManager();
+                return instance;
             }
         }
 
         public IWebDriver CreateDriver(string browserName)
         {
-            if (_currentDriver != null)
-                return _currentDriver;
+            if (currentDriver != null)
+                return currentDriver;
 
             try
             {
@@ -36,20 +36,20 @@ namespace SauceDemoTests.Drivers
                 {
                     case "edge":
                         var edgeOptions = new EdgeOptions();
-                        _currentDriver = new EdgeDriver(edgeOptions);
+                        currentDriver = new EdgeDriver(edgeOptions);
                         break;
 
                     case "firefox":
                         var firefoxOptions = new FirefoxOptions();
-                        _currentDriver = new FirefoxDriver(firefoxOptions);
+                        currentDriver = new FirefoxDriver(firefoxOptions);
                         break;
 
                     default:
                         throw new ArgumentException($"Unsupported browser: {browserName}");
                 }
 
-                _currentDriver.Manage().Window.Maximize();
-                _currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                currentDriver.Manage().Window.Maximize();
+                currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                 Logger.Log($"{browserName} driver initialized successfully.");
             }
             catch (Exception ex)
@@ -58,17 +58,17 @@ namespace SauceDemoTests.Drivers
                 throw;
             }
 
-            return _currentDriver;
+            return currentDriver;
         }
 
         public void QuitDriver()
         {
-            if (_currentDriver != null)
+            if (currentDriver != null)
             {
                 try
                 {
-                    _currentDriver.Manage().Cookies.DeleteAllCookies();
-                    _currentDriver.Quit();
+                    currentDriver.Manage().Cookies.DeleteAllCookies();
+                    currentDriver.Quit();
                     Logger.Log("Driver closed and resources cleaned up.");
                 }
                 catch (Exception ex)
@@ -77,7 +77,7 @@ namespace SauceDemoTests.Drivers
                 }
                 finally
                 {
-                    _currentDriver = null;
+                    currentDriver = null;
                 }
             }
         }

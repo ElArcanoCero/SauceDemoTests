@@ -11,11 +11,11 @@ namespace SauceDemoTests.Tests
 
     public class LoginTests : IDisposable
     {
-        private IWebDriver _driver;
+        private IWebDriver driver;
 
         public LoginTests()
         {
-            _driver = DriverManager.Instance.CreateDriver("edge");
+            driver = DriverManager.Instance.CreateDriver("edge");
         }
 
         [Theory]
@@ -31,9 +31,9 @@ namespace SauceDemoTests.Tests
         {
             Logger.Log($"[START] InvalidLogin on {browserName} with user='{username}' pass='{password}'");
 
-            _driver = DriverManager.Instance.CreateDriver(browserName);
+            driver = DriverManager.Instance.CreateDriver(browserName);
 
-            var loginPage = new LoginPage(_driver);
+            var loginPage = new LoginPage(driver);
             loginPage.Open();
             loginPage.Login(username, password);
 
@@ -56,13 +56,13 @@ namespace SauceDemoTests.Tests
         {
             Logger.Log($"[START] ValidLogin on {browserName} with user='{username}'");
 
-            _driver = DriverManager.Instance.CreateDriver(browserName);
+            driver = DriverManager.Instance.CreateDriver(browserName);
 
-            var loginPage = new LoginPage(_driver);
+            var loginPage = new LoginPage(driver);
             loginPage.Open();
             loginPage.Login(username, password);
 
-            var inventoryPage = new InventoryPage(_driver);
+            var inventoryPage = new InventoryPage(driver);
             var actualTitle = inventoryPage.GetLogoText();
 
             actualTitle.Should().Be(expectedDashboardTitle,

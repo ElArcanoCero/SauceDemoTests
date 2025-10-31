@@ -5,18 +5,18 @@ namespace SauceDemoTests.Pages
 
     public class InventoryPage
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver driver;
 
-        private readonly By _appLogo = By.CssSelector(".app_logo");
+        private readonly By appLogo = By.CssSelector(".app_logo");
 
-        public InventoryPage(IWebDriver driver)
+        public InventoryPage(IWebDriver Driver)
         {
-            _driver = driver;
+            driver = Driver;
         }
 
         public string GetLogoText()
         {
-            return _driver.FindElement(_appLogo).Text.Trim();
+            return driver.FindElement(appLogo).Text.Trim();
         }
     }
 }
