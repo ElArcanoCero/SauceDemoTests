@@ -10,8 +10,8 @@ namespace SauceDemoTests.Tests
 {
     public class LoginTests : IDisposable
     {
-        private readonly DriverManager _driverManager = DriverManager.Instance;
-        private IWebDriver? _driver;
+        private readonly DriverManager driverManager = DriverManager.Instance;
+        private IWebDriver? driver;
 
         [Theory]
 
@@ -28,9 +28,9 @@ namespace SauceDemoTests.Tests
             Logger.Log($"[TEST] Starting Login_Tests on {browserName} " +
                        $"with username='{username}', password='{password}'");
 
-            _driver = _driverManager.CreateDriver(browserName);
+            driver = driverManager.CreateDriver(browserName);
 
-            var loginPage = new LoginPage(_driver);
+            var loginPage = new LoginPage(driver);
             loginPage.Open();
             Logger.Log("[TEST] Login page opened.");
 
@@ -59,7 +59,7 @@ namespace SauceDemoTests.Tests
                 Logger.Log("[TEST] Executing UC-3 (valid login).");
                 loginPage.Login(username, password);
 
-                var inventoryPage = new InventoryPage(_driver);
+                var inventoryPage = new InventoryPage(driver);
                 var actualTitle = inventoryPage.GetLogoText();
                 Logger.Log($"[TEST] Inventory page title: '{actualTitle}'");
                 actualTitle.Should().Be(expected);
@@ -70,7 +70,7 @@ namespace SauceDemoTests.Tests
         public void Dispose()
         {
             Logger.Log("[TEST] Disposing test. Closing browser.");
-            _driverManager.QuitDriver();
+            driverManager.QuitDriver();
         }
     }
 }
