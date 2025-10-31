@@ -14,48 +14,19 @@ namespace SauceDemoTests.Tests
         private IWebDriver? _driver;
 
         [Theory]
+
         [InlineData("edge", "", "", "Epic sadface: Username is required")]
-        [InlineData("firefox", "", "", "Epic sadface: Username is required")]
-        [InlineData("edge", "standard_user", "", "Epic sadface: Password is required")]
-        [InlineData("firefox", "standard_user", "", "Epic sadface: Password is required")]
-        public void InvalidLogin_ShowsExpectedErrorMessage(
-            string browserName,
-            string username,
-            string password,
-            string expectedMessage)
-        {
-            Logger.Log($"[TEST] Starting InvalidLogin_ShowsExpectedErrorMessage on {browserName} " +
-                       $"with user='{username}', pass='{password}'");
+        [InlineData("firefox", "nombre", "clave", "Epic sadface: Username is required")]
 
-            _driver = _driverManager.CreateDriver(browserName);
+        [InlineData("edge", "nombre", "", "Epic sadface: Password is required")]
+        [InlineData("firefox", "nombre", "clave2", "Epic sadface: Password is required")]
 
-            var loginPage = new LoginPage(_driver);
-            loginPage.Open();
-            Logger.Log("[TEST] Login page opened.");
-
-            loginPage.Login(username, password);
-            Logger.Log("[TEST] Login attempted.");
-
-            var actualMessage = loginPage.GetErrorMessage();
-            Logger.Log($"[TEST] Error message from UI: '{actualMessage}'");
-
-            actualMessage.Should().Be(expectedMessage,
-                because: "the application should display the proper validation message");
-
-            Logger.Success("[TEST] Assertion passed for InvalidLogin_ShowsExpectedErrorMessage.");
-        }
-
-        [Theory]
         [InlineData("edge", "standard_user", "secret_sauce", "Swag Labs")]
         [InlineData("firefox", "standard_user", "secret_sauce", "Swag Labs")]
-        public void ValidLogin_ShowsSwagLabsTitle(
-            string browserName,
-            string username,
-            string password,
-            string expectedDashboardTitle)
+        public void Login_Tests(string browserName, string username, string password, string expected)
         {
-            Logger.Log($"[TEST] Starting ValidLogin_ShowsSwagLabsTitle on {browserName} " +
-                       $"with user='{username}'");
+            Logger.Log($"[TEST] Starting Login_Tests on {browserName} " +
+                       $"with username='{username}', password='{password}'");
 
             _driver = _driverManager.CreateDriver(browserName);
 
@@ -63,23 +34,44 @@ namespace SauceDemoTests.Tests
             loginPage.Open();
             Logger.Log("[TEST] Login page opened.");
 
-            loginPage.Login(username, password);
-            Logger.Log("[TEST] Login submitted.");
+            if (expected.Contains("Username is required", StringComparison.OrdinalIgnoreCase))
+            {
+                Logger.Log("[TEST] Executing UC-1 (empty credentials after clear).");
+                loginPage.LoginEmptyCredentials_UC1(username, password);
 
-            var inventoryPage = new InventoryPage(_driver);
-            var actualTitle = inventoryPage.GetLogoText();
-            Logger.Log($"[TEST] Inventory page title is '{actualTitle}'");
+                var actualMessage = loginPage.GetErrorMessage();
+                Logger.Log($"[TEST] Error message from UI: '{actualMessage}'");
+                actualMessage.Should().Be(expected);
+                Logger.Success("[TEST] UC-1 assertion passed.");
+            }
+            else if (expected.Contains("Password is required", StringComparison.OrdinalIgnoreCase))
+            {
+                Logger.Log("[TEST] Executing UC-2 (missing password).");
+                loginPage.LoginMissingPassword_UC2(username, password);
 
-            actualTitle.Should().Be(expectedDashboardTitle,
-                because: "successful login should navigate to inventory page labeled 'Swag Labs'");
+                var actualMessage = loginPage.GetErrorMessage();
+                Logger.Log($"[TEST] Error message from UI: '{actualMessage}'");
+                actualMessage.Should().Be(expected);
+                Logger.Success("[TEST] UC-2 assertion passed.");
+            }
+            else
+            {
+                Logger.Log("[TEST] Executing UC-3 (valid login).");
+                loginPage.Login(username, password);
 
-            Logger.Success("[TEST] Assertion passed for ValidLogin_ShowsSwagLabsTitle.");
+                var inventoryPage = new InventoryPage(_driver);
+                var actualTitle = inventoryPage.GetLogoText();
+                Logger.Log($"[TEST] Inventory page title: '{actualTitle}'");
+                actualTitle.Should().Be(expected);
+                Logger.Success("[TEST] UC-3 assertion passed.");
+            }
         }
 
         public void Dispose()
         {
-            Logger.Log("[TEST] Disposing test context, closing driver.");
+            Logger.Log("[TEST] Disposing test. Closing browser.");
             _driverManager.QuitDriver();
         }
     }
 }
+

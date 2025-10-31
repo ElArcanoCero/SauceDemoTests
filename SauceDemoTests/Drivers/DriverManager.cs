@@ -8,16 +8,15 @@ namespace SauceDemoTests.Drivers
 {
     public sealed class DriverManager
     {
-        private static DriverManager? _instance;
-        private IWebDriver? _currentDriver;
+        private static DriverManager? instance;
+        private IWebDriver? currentDriver;
 
-        public static DriverManager Instance => _instance ??= new DriverManager();
+        public static DriverManager Instance => instance ??= new DriverManager();
 
         private DriverManager() { }
 
         public IWebDriver CreateDriver(string browserName)
         {
-            // Cierra si había uno previo
             QuitDriver();
 
             Logger.Log($"[DriverManager] Creating driver for browser '{browserName}'");
@@ -25,12 +24,12 @@ namespace SauceDemoTests.Drivers
             switch (browserName.ToLower())
             {
                 case "edge":
-                    _currentDriver = new EdgeDriver();
+                    currentDriver = new EdgeDriver();
                     Logger.Success("[DriverManager] EdgeDriver initialized.");
                     break;
 
                 case "firefox":
-                    _currentDriver = new FirefoxDriver();
+                    currentDriver = new FirefoxDriver();
                     Logger.Success("[DriverManager] FirefoxDriver initialized.");
                     break;
 
@@ -40,23 +39,23 @@ namespace SauceDemoTests.Drivers
             }
 
             // Config común del navegador
-            _currentDriver.Manage().Window.Maximize();
-            _currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-            _currentDriver.Manage().Cookies.DeleteAllCookies();
+            currentDriver.Manage().Window.Maximize();
+            currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            currentDriver.Manage().Cookies.DeleteAllCookies();
 
             Logger.Log("[DriverManager] Driver configured: window maximized, implicit wait = 5s, cookies cleared.");
 
-            return _currentDriver;
+            return currentDriver;
         }
 
         public void QuitDriver()
         {
-            if (_currentDriver != null)
+            if (currentDriver != null)
             {
                 Logger.Log("[DriverManager] Quitting and disposing current driver.");
-                _currentDriver.Quit();
-                _currentDriver.Dispose();
-                _currentDriver = null;
+                currentDriver.Quit();
+                currentDriver.Dispose();
+                currentDriver = null;
                 Logger.Log("[DriverManager] Driver disposed successfully.");
             }
             else

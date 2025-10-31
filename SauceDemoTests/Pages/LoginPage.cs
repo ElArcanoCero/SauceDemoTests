@@ -6,13 +6,10 @@ namespace SauceDemoTests.Pages
     {
         private readonly IWebDriver driver;
 
-        private readonly By userField = By.Id("user-name");
-
-        private readonly By passField = By.Id("password");
-
-        private readonly By loginBtn = By.Id("login-button");
-
-        private readonly By errorBox = By.CssSelector("[data-test='error']");
+        private readonly By usernameInput = By.Id("user-name");
+        private readonly By passwordInput = By.Id("password");
+        private readonly By loginButton = By.Id("login-button");
+        private readonly By errorMessage = By.CssSelector("h3[data-test='error']");
 
         public LoginPage(IWebDriver Driver)
         {
@@ -23,22 +20,69 @@ namespace SauceDemoTests.Pages
         {
             driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
+        private void ForceClearWithJs(By locator)
+        {
+            var element = driver.FindElement(locator);
+            var js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("arguments[0].value = '';", element);
+        }
+
+        public void LoginEmptyCredentials_UC1(string username, string password)
+        {
+            var user = driver.FindElement(usernameInput);
+            var pass = driver.FindElement(passwordInput);
+
+            user.Clear();
+            pass.Clear();
+
+            user.SendKeys(username);
+            pass.SendKeys(password);
+
+            user.Clear();
+            pass.Clear();
+
+            driver.FindElement(loginButton).Click();
+        }
+
+        private void ForceClearWithJs(IWebElement pass)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoginMissingPassword_UC2(string username, string password)
+        {
+            var user = driver.FindElement(usernameInput);
+            var pass = driver.FindElement(passwordInput);
+
+            user.Clear();
+            pass.Clear();
+
+            user.SendKeys(username);
+            pass.SendKeys(password);
+
+            pass.Clear();
+
+            driver.FindElement(loginButton).Click();
+        }
 
         public void Login(string username, string password)
         {
-            driver.FindElement(userField).Clear();
-            driver.FindElement(passField).Clear();
+            var user = driver.FindElement(usernameInput);
+            var pass = driver.FindElement(passwordInput);
 
-            driver.FindElement(userField).SendKeys(username);
-            driver.FindElement(passField).SendKeys(password);
+            user.Clear();
+            pass.Clear();
 
-            driver.FindElement(loginBtn).Click();
+            user.SendKeys(username);
+            pass.SendKeys(password);
+
+            driver.FindElement(loginButton).Click();
         }
-
 
         public string GetErrorMessage()
         {
-            return driver.FindElement(errorBox).Text.Trim();
+            return driver.FindElement(errorMessage).Text.Trim();
         }
     }
 }
+
