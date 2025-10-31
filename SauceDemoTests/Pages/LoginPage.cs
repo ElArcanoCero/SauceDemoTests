@@ -1,11 +1,12 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
+using System.Xml.Linq;
 
 namespace SauceDemoTests.Pages
 {
     public class LoginPage
     {
         private readonly IWebDriver driver;
-
         private readonly By usernameInput = By.Id("user-name");
         private readonly By passwordInput = By.Id("password");
         private readonly By loginButton = By.Id("login-button");
@@ -20,12 +21,6 @@ namespace SauceDemoTests.Pages
         {
             driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
-        private void ForceClearWithJs(By locator)
-        {
-            var element = driver.FindElement(locator);
-            var js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript("arguments[0].value = '';", element);
-        }
 
         public void LoginEmptyCredentials_UC1(string username, string password)
         {
@@ -38,8 +33,11 @@ namespace SauceDemoTests.Pages
             user.SendKeys(username);
             pass.SendKeys(password);
 
-            user.Clear();
-            pass.Clear();
+            // el comando .clear() presenta falla en edge
+            user.SendKeys(Keys.Control + "a"); // Selecciona todo
+            user.SendKeys(Keys.Backspace); // borra la seleccion
+            pass.SendKeys(Keys.Control + "a"); // Selecciona todo
+            pass.SendKeys(Keys.Backspace); // borra la seleccion
 
             driver.FindElement(loginButton).Click();
         }
@@ -60,7 +58,8 @@ namespace SauceDemoTests.Pages
             user.SendKeys(username);
             pass.SendKeys(password);
 
-            pass.Clear();
+            pass.SendKeys(Keys.Control + "a"); // Selecciona todo
+            pass.SendKeys(Keys.Backspace); // borra la seleccion
 
             driver.FindElement(loginButton).Click();
         }
