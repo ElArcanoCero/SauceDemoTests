@@ -21,7 +21,7 @@ namespace SauceDemoTests.Utils
             lock (_lock)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ ERROR: {errorMessage}");
+                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ERROR: {errorMessage}");
                 Console.ResetColor();
             }
         }
@@ -31,7 +31,7 @@ namespace SauceDemoTests.Utils
             lock (_lock)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ {successMessage}");
+                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {successMessage}");
                 Console.ResetColor();
             }
         }

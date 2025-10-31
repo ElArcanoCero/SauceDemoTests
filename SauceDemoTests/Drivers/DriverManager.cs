@@ -10,7 +10,7 @@ namespace SauceDemoTests.Drivers
     public sealed class DriverManager
     {
         private static DriverManager? _instance;
-        private IWebDriver _currentDriver;
+        private IWebDriver? _currentDriver;
 
 
         private DriverManager() { }
@@ -50,11 +50,11 @@ namespace SauceDemoTests.Drivers
 
                 _currentDriver.Manage().Window.Maximize();
                 _currentDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-                Logger.Log($"✅ {browserName} driver initialized successfully.");
+                Logger.Log($"{browserName} driver initialized successfully.");
             }
             catch (Exception ex)
             {
-                Logger.Log($"❌ Failed to initialize {browserName} driver: {ex.Message}");
+                Logger.Log($"Failed to initialize {browserName} driver: {ex.Message}");
                 throw;
             }
 
@@ -69,11 +69,11 @@ namespace SauceDemoTests.Drivers
                 {
                     _currentDriver.Manage().Cookies.DeleteAllCookies();
                     _currentDriver.Quit();
-                    Logger.Log("🧹 Driver closed and resources cleaned up.");
+                    Logger.Log("Driver closed and resources cleaned up.");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"⚠️ Error during driver cleanup: {ex.Message}");
+                    Logger.Log($"Error during driver cleanup: {ex.Message}");
                 }
                 finally
                 {
