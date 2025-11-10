@@ -2,21 +2,16 @@
 
 namespace SauceDemoTests.Pages
 {
-
-    public class InventoryPage
+    /// <summary>
+    /// Página de inventario tras login exitoso.
+    /// </summary>
+    public class InventoryPage : BasePage
     {
-        private readonly IWebDriver driver;
-
         private readonly By appLogo = By.CssSelector(".app_logo");
 
-        public InventoryPage(IWebDriver Driver)
-        {
-            driver = Driver;
-        }
+        public InventoryPage(IWebDriver driver) : base(driver) { }
 
-        public string GetLogoText()
-        {
-            return driver.FindElement(appLogo).Text.Trim();
-        }
+        /// <summary>Texto del logo (debe ser "Swag Labs").</summary>
+        public string GetLogoText() => GetText(appLogo);
     }
 }

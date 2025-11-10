@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace SauceDemoTests.Utils
+﻿namespace SauceDemoTests.Utils
 {
     public static class Logger
     {
         private static readonly object Lock = new object();
 
+        /// <summary>Mensaje informativo</summary>
         public static void Log(string message)
         {
             lock (Lock)
@@ -15,7 +14,7 @@ namespace SauceDemoTests.Utils
                 Console.ResetColor();
             }
         }
-
+        /// <summary>Mensaje de error</summary>
         public static void Error(string errorMessage)
         {
             lock (Lock)
@@ -26,6 +25,7 @@ namespace SauceDemoTests.Utils
             }
         }
 
+        /// <summary>Mensaje de ejecucion exitosa</summary>
         public static void Success(string successMessage)
         {
             lock (Lock)

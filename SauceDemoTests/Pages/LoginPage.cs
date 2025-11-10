@@ -1,87 +1,61 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Edge;
-using System.Xml.Linq;
 
 namespace SauceDemoTests.Pages
 {
-    public class LoginPage
+    /// <summary>
+    /// Page Object de la página de Login (https://www.saucedemo.com/)
+    /// Implementa UC-1, UC-2 y login válido (UC-3).
+    /// </summary>
+    public class LoginPage : BasePage
     {
-        private readonly IWebDriver driver;
         private readonly By usernameInput = By.Id("user-name");
         private readonly By passwordInput = By.Id("password");
         private readonly By loginButton = By.Id("login-button");
         private readonly By errorMessage = By.CssSelector("h3[data-test='error']");
 
-        public LoginPage(IWebDriver Driver)
-        {
-            driver = Driver;
-        }
+        public LoginPage(IWebDriver driver) : base(driver) { }
 
-        public void Open()
-        {
-            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
-        }
+        /// <summary>Abre la página de login.</summary>
+        public void Open() => driver.Navigate().GoToUrl("https://www.saucedemo.com/");
 
+        /// <summary>
+        /// UC-1: Escribir credenciales, limpiar ambos campos y hacer login.
+        /// Esperado: "Epic sadface: Username is required".
+        /// </summary>
         public void LoginEmptyCredentials_UC1(string username, string password)
         {
-            var user = driver.FindElement(usernameInput);
-            var pass = driver.FindElement(passwordInput);
+            Type(usernameInput, username);
+            Type(passwordInput, password);
 
-            user.Clear();
-            pass.Clear();
+            SmartClear(usernameInput);
+            SmartClear(passwordInput);
 
-            user.SendKeys(username);
-            pass.SendKeys(password);
-
-            // el comando .clear() presenta falla en edge
-            user.SendKeys(Keys.Control + "a"); // Selecciona todo
-            user.SendKeys(Keys.Backspace); // borra la seleccion
-            pass.SendKeys(Keys.Control + "a"); // Selecciona todo
-            pass.SendKeys(Keys.Backspace); // borra la seleccion
-
-            driver.FindElement(loginButton).Click();
+            Click(loginButton);
         }
 
-        private void ForceClearWithJs(IWebElement pass)
+        /// <summary>
+        /// UC-2: Username válido, password vacía al enviar.
+        /// Esperado: "Epic sadface: Password is required".
+        /// </summary>
+        public void LoginMissingPassword_UC2(string username, string passwordTemp)
         {
-            throw new NotImplementedException();
+            Type(usernameInput, username);
+            Type(passwordInput, passwordTemp);
+            SmartClear(passwordInput);
+            Click(loginButton);
         }
 
-        public void LoginMissingPassword_UC2(string username, string password)
-        {
-            var user = driver.FindElement(usernameInput);
-            var pass = driver.FindElement(passwordInput);
-
-            user.Clear();
-            pass.Clear();
-
-            user.SendKeys(username);
-            pass.SendKeys(password);
-
-            pass.SendKeys(Keys.Control + "a"); // Selecciona todo
-            pass.SendKeys(Keys.Backspace); // borra la seleccion
-
-            driver.FindElement(loginButton).Click();
-        }
-
+        /// <summary>
+        /// UC-3: Login válido normal (standard_user / secret_sauce).
+        /// </summary>
         public void Login(string username, string password)
         {
-            var user = driver.FindElement(usernameInput);
-            var pass = driver.FindElement(passwordInput);
-
-            user.Clear();
-            pass.Clear();
-
-            user.SendKeys(username);
-            pass.SendKeys(password);
-
-            driver.FindElement(loginButton).Click();
+            Type(usernameInput, username);
+            Type(passwordInput, password);
+            Click(loginButton);
         }
 
-        public string GetErrorMessage()
-        {
-            return driver.FindElement(errorMessage).Text.Trim();
-        }
+        /// <summary>Devuelve el mensaje de error mostrado tras login inválido.</summary>
+        public string GetErrorMessage() => GetText(errorMessage);
     }
 }
-
